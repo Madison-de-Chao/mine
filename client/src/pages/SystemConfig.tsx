@@ -129,6 +129,25 @@ export default function SystemConfig() {
               animation: "float 6s ease-in-out infinite",
             }}
           />
+          
+          {/* Brand Logos */}
+          <motion.div
+            className="flex items-center justify-center gap-8 mt-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 1 }}
+          >
+            <img
+              src="/rs-logo.png"
+              alt="虹靈御所 Rainbow Sanctuary"
+              className="h-16 md:h-20 object-contain"
+            />
+            <img
+              src="/mdc-logo.png"
+              alt="MAISON DE CHAO"
+              className="h-16 md:h-20 object-contain"
+            />
+          </motion.div>
           <motion.div
             className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#a7a7bb] text-sm"
             animate={{ opacity: [1, 0.5, 1] }}
