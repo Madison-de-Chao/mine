@@ -159,6 +159,7 @@ export default function SystemConfig() {
         <ChapterContainer
           chapterNumber="第一章"
           chapterTitle="品牌哲學"
+          chapterSpell="理秩序是宇宙的語法，自由是靈魂的文法。"
           chapterColor="#f7d37b"
           isVisible={visibleSections.has("chapter-1")}
         >
@@ -222,6 +223,7 @@ export default function SystemConfig() {
         <ChapterContainer
           chapterNumber="第二章"
           chapterTitle="我們為誰服務"
+          chapterSpell="煉思考不是反應，而是創造秩序的鍛煉。"
           chapterColor="#7fe2c5"
           isVisible={visibleSections.has("chapter-2")}
         >
@@ -248,6 +250,7 @@ export default function SystemConfig() {
         <ChapterContainer
           chapterNumber="第三章"
           chapterTitle="思維系統"
+          chapterSpell="慈吸入混亂，呼出秩序；低耗能，高儲備。"
           chapterColor="#7ad1ff"
           isVisible={visibleSections.has("chapter-3")}
         >
@@ -331,6 +334,7 @@ export default function SystemConfig() {
         <ChapterContainer
           chapterNumber="第四章"
           chapterTitle="核心方法"
+          chapterSpell="悲看見裂縫，補上結構，留下窗光。"
           chapterColor="#ff7aa8"
           isVisible={visibleSections.has("chapter-4")}
         >
@@ -409,6 +413,7 @@ export default function SystemConfig() {
         <ChapterContainer
           chapterNumber="第五章"
           chapterTitle="系統哲學"
+          chapterSpell="思不替你選，但絕不模糊地結束。喚喚起自我領導。靈靈魂之城，系統共生。魂定位思維，建構結構，開窗迎光。"
           chapterColor="#9b8cff"
           isVisible={visibleSections.has("chapter-5")}
         >
@@ -445,6 +450,21 @@ export default function SystemConfig() {
                   誠實才是唯一的解答。
                 </p>
               </div>
+
+              {/* 藏頭藏尾詩說明 */}
+              <motion.div
+                className="mt-16 p-8 bg-[#141426]/60 backdrop-blur-sm rounded-2xl border border-[#9b8cff]/30"
+                variants={containerVariants}
+                transition={{ delay: 0.5 }}
+              >
+                <p className="text-2xl font-bold mb-4 bg-gradient-to-r from-[#7ad1ff] to-[#f7d37b] bg-clip-text text-transparent">
+                  自在見真光生成明
+                </p>
+                <p className="text-sm text-[#a7a7bb] leading-relaxed">
+                  首尾相應:首字藏頭 = <span className="text-[#7ad1ff]">理煉慈悲思喚靈魂</span>;
+                  尾字藏尾 = <span className="text-[#f7d37b]">自在見真光生成明</span>。
+                </p>
+              </motion.div>
             </motion.div>
           </div>
         </ChapterContainer>
