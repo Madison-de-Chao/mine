@@ -70,6 +70,31 @@ export default function SystemConfig() {
         className="min-h-screen flex items-center justify-center relative overflow-hidden"
         style={{ opacity }}
       >
+        {/* Manus Badge */}
+        <motion.div
+          className="absolute top-8 right-8 z-20"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+        >
+          <a
+            href="https://manus.im"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-3 px-6 py-3 bg-[#141426]/80 backdrop-blur-sm rounded-full border border-[#7ad1ff]/30 hover:border-[#7ad1ff] transition-all duration-300 hover:scale-105"
+          >
+            <span className="text-sm text-[#a7a7bb] group-hover:text-[#7ad1ff] transition-colors">
+              由
+            </span>
+            <span className="text-lg font-bold bg-gradient-to-r from-[#7ad1ff] to-[#9b8cff] bg-clip-text text-transparent">
+              Manus
+            </span>
+            <span className="text-sm text-[#a7a7bb] group-hover:text-[#7ad1ff] transition-colors">
+              製作
+            </span>
+          </a>
+        </motion.div>
+
         {/* Radial Gradient Background */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#7ad1ff]/10 rounded-full blur-[120px]" />
