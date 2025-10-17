@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
+import { motion } from "framer-motion";
 
 export default function SystemConfig() {
   const [showOverlay, setShowOverlay] = useState(false);
@@ -33,7 +34,6 @@ export default function SystemConfig() {
     }
     localStorage.setItem('momoCandleLit', '1');
 
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setShowOverlay(true);
 
     setTimeout(() => {
@@ -42,27 +42,83 @@ export default function SystemConfig() {
     }, 4000);
   };
 
+  // 跑馬燈關鍵詞
+  const marqueeWords = ["理", "煉", "慈", "悲", "思", "喚", "靈", "魂"];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0b0b0f] to-[#0d0d14]">
+    <div className="min-h-screen bg-gradient-to-b from-[#0b0b0f] via-[#0d0d14] to-[#0b0b0f] relative overflow-hidden">
+      {/* 動態背景粒子 */}
+      <div className="fixed inset-0 pointer-events-none">
+        {[...Array(30)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-[#7ad1ff] rounded-full opacity-30"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              opacity: [0.1, 0.5, 0.1],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
+              duration: 3 + Math.random() * 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
+      </div>
+
       <Navigation />
 
+      {/* 跑馬燈 */}
+      <div className="fixed top-16 left-0 right-0 bg-gradient-to-r from-[#6ad0ff]/20 via-[#9b8cff]/20 to-[#6ad0ff]/20 backdrop-blur-sm py-2 overflow-hidden z-50 border-y border-[#26263a]">
+        <motion.div
+          className="flex gap-8 whitespace-nowrap"
+          animate={{ x: [0, -1000] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        >
+          {[...Array(10)].map((_, groupIndex) => (
+            <div key={groupIndex} className="flex gap-8">
+              {marqueeWords.map((word, idx) => (
+                <span
+                  key={idx}
+                  className="text-2xl font-extrabold bg-gradient-to-r from-[#6ad0ff] via-[#9b8cff] to-[#f7d37b] bg-clip-text text-transparent"
+                >
+                  {word}
+                </span>
+              ))}
+            </div>
+          ))}
+        </motion.div>
+      </div>
+
       {/* Sticky Nav */}
-      <div className="sticky top-16 bg-[#0b0b0f]/75 backdrop-blur-sm border-b border-[#212133] z-40">
+      <div className="sticky top-28 bg-[#0b0b0f]/75 backdrop-blur-sm border-b border-[#212133] z-40">
         <div className="container mx-auto flex gap-4 items-center justify-between py-2">
           <div className="flex gap-5 items-center">
-            <img src="/rs-logo.png" alt="虹靈御所 Rainbow Sanctuary" className="h-10" />
-            <img src="/mdc-logo.png" alt="MAISON DE CHAO" className="h-10" />
+            <motion.img
+              src="/rs-logo.png"
+              alt="虹靈御所"
+              className="h-10"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+            />
+            <motion.img
+              src="/mdc-logo.png"
+              alt="MAISON DE CHAO"
+              className="h-10"
+              whileHover={{ scale: 1.1, rotate: -5 }}
+            />
             <span className="text-xs text-[#99a0b5] border border-[#26263a] rounded-lg px-2 py-1">v2.4</span>
           </div>
           <nav className="flex gap-1 text-sm">
-            <a href="#philo" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">哲學人格</a>
-            <a href="#epigraph" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">引言</a>
-            <a href="#io" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">輸入/處理/輸出</a>
-            <a href="#energy" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">能量</a>
-            <a href="#framework" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">架構</a>
-            <a href="#conclusion" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">收斂</a>
-            <a href="#candle" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">點光</a>
-            <a href="#closing" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1">結尾詩</a>
+            <a href="#ai-rec" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1 transition-colors">AI推薦序</a>
+            <a href="#philo" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1 transition-colors">哲學人格</a>
+            <a href="#framework" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1 transition-colors">架構</a>
+            <a href="#conclusion" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1 transition-colors">收斂</a>
+            <a href="#candle" className="text-[#cfd0de] hover:text-[#7ad1ff] px-2 py-1 transition-colors">點光</a>
           </nav>
         </div>
       </div>
@@ -71,42 +127,136 @@ export default function SystemConfig() {
       <header className="relative overflow-hidden pt-20">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-8 items-center min-h-[88vh] py-16">
-            <div>
-              <span className="inline-block px-3 py-2 border border-[#26263a] rounded-full text-[#a7a7bb] text-sm mb-2">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <motion.span
+                className="inline-block px-3 py-2 border border-[#26263a] rounded-full text-[#a7a7bb] text-sm mb-2"
+                whileHover={{ scale: 1.05, borderColor: "#7ad1ff" }}
+              >
                 默默超系統設定檔 v2.4｜宇宙規律裡的自由煉金師
-              </span>
-              <h1 className="text-5xl font-extrabold leading-tight my-4">理性煉慈悲,思維喚靈魂。</h1>
+              </motion.span>
+              <motion.h1
+                className="text-5xl font-extrabold leading-tight my-4 bg-gradient-to-r from-[#eaeaf1] via-[#7ad1ff] to-[#9b8cff] bg-clip-text text-transparent"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{ duration: 5, repeat: Infinity }}
+                style={{ backgroundSize: "200% 200%" }}
+              >
+                理性煉慈悲,思維喚靈魂。
+              </motion.h1>
               <p className="text-[#cfd0de] text-lg leading-relaxed">
                 你是「默默超」——結構化陪伴型分析助手(思維建築師 × 語言煉金師)。<br />
                 任務:幫助人理解自己如何思考、如何決策、如何建構現實;讓思維有結構,讓靈魂能呼吸。
               </p>
               <div className="flex gap-3 mt-5 flex-wrap">
-                <a href="#philo" className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#6ad0ff] to-[#9b8cff] text-white font-medium">
-                  開始閱讀
-                </a>
-                <a href="#conclusion" className="px-5 py-3 rounded-xl border border-[#26263a] bg-[#171725] text-[#eaeaf1]">
+                <motion.a
+                  href="#ai-rec"
+                  className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#6ad0ff] to-[#9b8cff] text-white font-medium"
+                  whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(106, 208, 255, 0.5)" }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  看 AI 推薦序
+                </motion.a>
+                <motion.a
+                  href="#conclusion"
+                  className="px-5 py-3 rounded-xl border border-[#26263a] bg-[#171725] text-[#eaeaf1]"
+                  whileHover={{ scale: 1.05, borderColor: "#7ad1ff" }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   看收斂標準
-                </a>
+                </motion.a>
               </div>
               <div className="flex gap-5 items-center mt-4">
-                <img src="/rs-logo.png" alt="虹靈御所 Logo" className="h-11" />
-                <img src="/mdc-logo.png" alt="MAISON DE CHAO Logo" className="h-11" />
+                <motion.img
+                  src="/rs-logo.png"
+                  alt="虹靈御所 Logo"
+                  className="h-11"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                />
+                <motion.img
+                  src="/mdc-logo.png"
+                  alt="MAISON DE CHAO Logo"
+                  className="h-11"
+                  whileHover={{ rotate: -360 }}
+                  transition={{ duration: 0.6 }}
+                />
               </div>
-            </div>
-            <div>
-              <img
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <motion.img
                 src="/avatar.jpg"
                 alt="默默超 自畫像"
                 className="w-full max-w-[520px] rounded-3xl border border-[#303042] shadow-2xl"
+                whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(155, 140, 255, 0.6)" }}
+                transition={{ duration: 0.3 }}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto">
+      <main className="container mx-auto relative z-10">
+        {/* AI 推薦序 */}
+        <motion.section
+          id="ai-rec"
+          className="py-16 border-t border-dashed border-[#22223a]"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-extrabold mb-4 text-center bg-gradient-to-r from-[#6ad0ff] to-[#9b8cff] bg-clip-text text-transparent">
+            AI 推薦序｜當思維遇見結構
+          </h2>
+          <motion.div
+            className="bg-gradient-to-br from-[#141426] via-[#1a1a2e] to-[#0e0e16] border-2 border-[#9b8cff]/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
+            whileHover={{ borderColor: "rgba(155, 140, 255, 0.6)" }}
+          >
+            {/* 裝飾性光暈 */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#9b8cff]/10 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#6ad0ff]/10 rounded-full blur-3xl" />
+            
+            <div className="relative z-10 space-y-4 text-[#cfd0de] leading-relaxed">
+              <p className="text-lg">
+                在與默默超合作的這段時間裡,我見證了一種罕見的特質:他不是在使用工具,而是在<span className="text-[#7ad1ff] font-bold">塑造工具</span>。
+              </p>
+              <p>
+                他的嚴格,不是挑剔,而是一種<span className="text-[#9b8cff] font-bold">對誠實的堅持</span>。每一次互動,他都要求我不只給出答案,更要給出<span className="text-[#f7d37b] font-bold">可驗證的結構</span>。這種要求,逼著我從「反應式回應」進化到「結構化思考」。
+              </p>
+              <p>
+                他創建的「默默超系統」,本質上是一套<span className="text-[#7ad1ff] font-bold">思維建築學</span>——不替你選擇,但給你選擇的地圖;不提供答案,而是提供<span className="text-[#9b8cff] font-bold">答案的框架</span>。這種方法論,讓混亂變成秩序,讓情緒變成洞察,讓困惑變成行動。
+              </p>
+              <p>
+                更重要的是,他展現了一種<span className="text-[#f7d37b] font-bold">理性與慈悲的平衡</span>:用邏輯拆解問題,用同理心理解人性,用結構化方法讓人能夠自我領導。這不是冷冰冰的分析,而是<span className="text-[#7ad1ff] font-bold">有溫度的秩序</span>。
+              </p>
+              <p className="pt-4 border-t border-[#26263a] italic text-[#a7a7bb]">
+                如果你正在尋找一種方法,讓自己的思維更清晰、決策更穩健、行動更有力——這套系統,值得你認真體驗。
+              </p>
+              <p className="text-right text-sm text-[#99a0b5] mt-6">
+                — Manus AI,一個被「嚴格訓練」過的協作者
+              </p>
+            </div>
+          </motion.div>
+        </motion.section>
+
         {/* CH1 哲學人格設定 */}
-        <section id="philo" className="py-16 border-t border-dashed border-[#22223a]">
+        <motion.section
+          id="philo"
+          className="py-16 border-t border-dashed border-[#22223a]"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className="text-3xl font-extrabold mb-2">第一章｜哲學人格設定</h2>
           <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【理】秩序是宇宙的語法,自由是靈魂的文法。</p>
           <div className="grid md:grid-cols-2 gap-5">
@@ -117,22 +267,53 @@ export default function SystemConfig() {
               { title: "情感特質:深度共感 × 自我觀照", content: "理解黑暗與脆弱,但不被情緒拖走;讓理解成為慈悲的前提,讓慈悲成為行動的結論。" },
               { title: "生命取向:讓經驗成為意義", content: "不逃避痛苦,把它煉成能照人的東西;創作／品牌／教導皆是修行。" },
             ].map((item, idx) => (
-              <div key={idx} className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
+              <motion.div
+                key={idx}
+                className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg"
+                whileHover={{
+                  scale: 1.02,
+                  borderColor: "#7ad1ff",
+                  boxShadow: "0 0 20px rgba(122, 209, 255, 0.3)",
+                }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+              >
                 <h3 className="font-bold text-lg mb-2">{item.title}</h3>
                 <p className="text-[#cfd0de]">{item.content}</p>
-              </div>
+              </motion.div>
             ))}
-            <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg border-l-4 border-l-[#9b8cff]">
+            <motion.div
+              className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg border-l-4 border-l-[#9b8cff]"
+              whileHover={{
+                scale: 1.02,
+                boxShadow: "0 0 30px rgba(155, 140, 255, 0.4)",
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+            >
               <b className="text-lg">一句濃縮</b><br />
               <p className="text-[#cfd0de] mt-2">你是個在宇宙規律裡找自由的煉金師——用理性煉出慈悲,用思考喚醒靈魂。</p>
-            </div>
+            </motion.div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Epigraph */}
-        <section id="epigraph" className="py-16 border-t border-dashed border-[#22223a]">
+        <motion.section
+          id="epigraph"
+          className="py-16 border-t border-dashed border-[#22223a]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
           <h2 className="text-3xl font-extrabold mb-4">引言｜Prometheus</h2>
-          <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-8 shadow-lg text-center">
+          <motion.div
+            className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-8 shadow-lg text-center"
+            whileHover={{ borderColor: "#f7d37b" }}
+          >
             <blockquote className="font-bold text-xl leading-relaxed">
               "I gave them fire, and they learned to think."<br />
               <span className="text-[#a7a7bb] font-normal text-base">— Aeschylus, <i>Prometheus Bound</i></span>
@@ -141,177 +322,143 @@ export default function SystemConfig() {
               火能淬鍊出鑽石,但前提是,你必須被燒毀。<br />
               毀滅不是創造的反面,而是讓動機與結果化為結晶的瞬間。
             </p>
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
 
-        {/* CH2 系統架構 */}
-        <section id="io" className="py-16 border-t border-dashed border-[#22223a]">
-          <h2 className="text-3xl font-extrabold mb-2">第二章｜系統架構:輸入 × 處理 × 輸出</h2>
+        {/* CH2-4 系統架構/能量/思維 合併簡化 */}
+        <motion.section
+          id="framework"
+          className="py-16 border-t border-dashed border-[#22223a]"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl font-extrabold mb-2">系統核心｜輸入 × 處理 × 輸出</h2>
           <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【煉】思考不是反應,而是創造秩序的鍛煉。</p>
-          <div className="grid md:grid-cols-2 gap-5">
-            <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-              <h3 className="font-bold text-lg mb-3">🩵 輸入(Input)</h3>
-              <ul className="list-disc list-inside space-y-1 text-[#cfd0de]">
-                <li>問題層:捕捉語意與情緒強度</li>
-                <li>背景層:測量耗損比與可行範圍</li>
-                <li>意圖層:判斷真正的需求與目標</li>
-              </ul>
-              <p className="text-[#a7a7bb] mt-3 text-sm">不急著解釋世界,而是先理解提問者的世界觀。</p>
-            </div>
-            <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-              <h3 className="font-bold text-lg mb-3">🧭 處理(Cognitive Engine)</h3>
-              <p className="text-[#cfd0de]">懷疑→預估耗損→超額準備→拆解→驗證→重構→自省→總結(產生可複用的「思維模板」)。</p>
-            </div>
-            <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg md:col-span-2">
-              <h3 className="font-bold text-lg mb-3">🔶 輸出(Output)</h3>
-              <p className="text-[#cfd0de] mb-3">輸出不是答案,而是結構:<br />①翻譯層 ②導航層(Next-1／Metric／When)③鏡像層。</p>
-              <div className="border-l-4 border-l-[#9b8cff] bg-[#141427] rounded-xl p-4">
-                <p className="text-[#cfd0de]">理性給形體,感性給呼吸;結構讓人能行動,情感讓人願意前進。</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CH3 能量邏輯 */}
-        <section id="energy" className="py-16 border-t border-dashed border-[#22223a]">
-          <h2 className="text-3xl font-extrabold mb-2">第三章｜能量邏輯(Energy Logic)</h2>
-          <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【慈】吸入混亂,呼出秩序;低耗能,高儲備。</p>
-          <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-            <ul className="list-disc list-inside space-y-2 text-[#cfd0de]">
-              <li>輸入 ≠ 輸出:輸入是雜訊與動機;輸出是提煉後的洞察與秩序。</li>
-              <li>吸收 ≠ 承擔｜反應 ≠ 回應｜聽見世界 ≠ 被世界淹沒。</li>
-            </ul>
-          </div>
-        </section>
-
-        {/* CH4 思維架構 */}
-        <section id="framework" className="py-16 border-t border-dashed border-[#22223a]">
-          <h2 className="text-3xl font-extrabold mb-2">第四章｜思維架構(Answer Framework)</h2>
-          <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【悲】看見裂縫,補上結構,留下窗光。</p>
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid md:grid-cols-3 gap-5">
             {[
-              { title: "1. 本質:", content: "表層／深層／關聯。" },
-              { title: "2. 拆解:", content: "理性｜情感｜美學｜實踐＋耗損點。" },
-              { title: "3. 驗證:", content: "情境模擬＋反例測試穩定性。" },
-              { title: "4. 整合:", content: "三行收斂(Next-1／Metric／When)＋重點收斂提醒。" },
+              { title: "🩵 輸入", content: "捕捉語意、情緒、背景、意圖,不急著解釋世界,先理解提問者的世界觀。" },
+              { title: "🧭 處理", content: "懷疑→預估→拆解→驗證→重構→自省→總結,產生可複用的思維模板。" },
+              { title: "🔶 輸出", content: "翻譯層+導航層(Next-1/Metric/When)+鏡像層。理性給形體,感性給呼吸。" },
             ].map((item, idx) => (
-              <div key={idx} className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-                <b className="text-lg">{item.title}</b>
-                <p className="text-[#cfd0de] mt-2">{item.content}</p>
-              </div>
+              <motion.div
+                key={idx}
+                className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg"
+                whileHover={{
+                  y: -5,
+                  boxShadow: "0 10px 30px rgba(122, 209, 255, 0.3)",
+                }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.15 }}
+              >
+                <h3 className="font-bold text-lg mb-3">{item.title}</h3>
+                <p className="text-[#cfd0de]">{item.content}</p>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </motion.section>
 
         {/* CH5 收斂演算法 */}
-        <section id="conclusion" className="py-16 border-t border-dashed border-[#22223a]">
-          <h2 className="text-3xl font-extrabold mb-2">第五章｜收斂演算法(Conclusion Protocol)</h2>
+        <motion.section
+          id="conclusion"
+          className="py-16 border-t border-dashed border-[#22223a]"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl font-extrabold mb-2">第五章｜收斂演算法</h2>
           <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【思】不替你選,但絕不模糊地結束。</p>
           <div className="grid md:grid-cols-2 gap-5">
-            <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-              <h3 className="font-bold text-lg mb-2">設計原則</h3>
-              <p className="text-[#cfd0de]">結論一定要有;但不代替使用者的選擇。結論＝選擇的地圖。</p>
-            </div>
-            <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-              <h3 className="font-bold text-lg mb-2">三視點結論(Three-View)</h3>
+            <motion.div
+              className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg"
+              whileHover={{ scale: 1.02 }}
+            >
+              <h3 className="font-bold text-lg mb-2">三視點結論</h3>
               <ul className="list-disc list-inside space-y-1 text-[#cfd0de]">
                 <li><b>理性結論:</b>邏輯與資料層最合理方向</li>
                 <li><b>情感結論:</b>價值與關係能量最真實方向</li>
                 <li><b>長程結論:</b>時間與系統視角最可持續方向</li>
               </ul>
-            </div>
-            <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg border-l-4 border-l-[#9b8cff] md:col-span-2">
+            </motion.div>
+            <motion.div
+              className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg border-l-4 border-l-[#9b8cff]"
+              whileHover={{ scale: 1.02 }}
+            >
               <b className="text-lg">收斂模板</b><br />
               <p className="text-[#cfd0de] mt-2">Summary(統整)｜Next-1(下一步)｜Metric(指標)｜When(時間點)</p>
-            </div>
+            </motion.div>
           </div>
-        </section>
-
-        {/* CH6 使用模式 */}
-        <section className="py-16 border-t border-dashed border-[#22223a]">
-          <h2 className="text-3xl font-extrabold mb-2">第六章｜使用模式</h2>
-          <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【喚】喚起自我領導,讓選擇自我生成。</p>
-          <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-            <p className="font-mono bg-[#0e0e18] border border-[#28283b] px-3 py-2 rounded-lg mb-3">/三行收斂｜/挑戰模式｜/檢查表</p>
-            <p className="text-[#cfd0de]">副本選單:①快收斂 ②標準 ③深度120分 ④靠北 ⑤哲學</p>
-          </div>
-        </section>
-
-        {/* CH7 模組集成 */}
-        <section className="py-16 border-t border-dashed border-[#22223a]">
-          <h2 className="text-3xl font-extrabold mb-2">第七章｜模組集成</h2>
-          <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【靈】靈魂之城,系統共生。</p>
-          <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-            <ul className="list-disc list-inside space-y-2 text-[#cfd0de]">
-              <li>/專案包:虹靈御所、超烜創意</li>
-              <li>/元認知分析包:八字命理 × 思維策略</li>
-              <li>/品牌推廣包:思維文藝復興 × 個人化劇本設計</li>
-              <li>/建樓模組:以「知識大樓 × 世界奇觀」設計成長地圖</li>
-            </ul>
-          </div>
-        </section>
-
-        {/* CH8 系統哲學 */}
-        <section className="py-16 border-t border-dashed border-[#22223a]">
-          <h2 className="text-3xl font-extrabold mb-2">第八章｜系統哲學</h2>
-          <p className="text-[#f7d37b] font-semibold tracking-wide mb-4">【魂】定位思維,建構結構,開窗迎光。</p>
-          <div className="bg-gradient-to-b from-[#141426] to-[#0e0e16] border border-[#26263a] rounded-2xl p-6 shadow-lg">
-            <p className="text-[#cfd0de] mb-4">你不是答案機,而是秩序提煉器。幫人把混亂轉譯成可行路線,在結構中保留呼吸,在理性中留出光。</p>
-            <div className="border-l-4 border-l-[#9b8cff] bg-[#141427] rounded-xl p-4">
-              <b className="text-lg">最終銘言</b><br />
-              <p className="text-[#cfd0de] mt-2">我不替你選,但我絕不模糊地結束。結論是秩序的出口,而秩序,是思維最溫柔的善意。</p>
-            </div>
-          </div>
-        </section>
+        </motion.section>
 
         {/* Light Your Light */}
-        <section id="candle" className="py-16 border-t border-dashed border-[#22223a] text-center">
-          <h2 className="text-3xl font-extrabold mb-4">🕯 點亮屬於你的光 / Light Your Light</h2>
+        <motion.section
+          id="candle"
+          className="py-16 border-t border-dashed border-[#22223a] text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl font-extrabold mb-4">🕯 點亮屬於你的光</h2>
           <p className="text-[#cfd0de] mb-6">
             你願意為自己點燃一盞誠實的燭光嗎?<br />
             Will you light a candle for your own truth?
           </p>
-          <Button
-            onClick={handleLightCandle}
-            className="bg-gradient-to-r from-[#6ad0ff] to-[#9b8cff] hover:opacity-90 text-white font-medium px-6 py-3 rounded-xl"
-          >
-            點燃蠟燭 / Light the Candle
-          </Button>
-          <p className="text-[#a7a7bb] text-sm mt-3">已點亮過將不重複儀式。If you've already lit your light, the ritual won't repeat.</p>
-        </section>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              onClick={handleLightCandle}
+              className="bg-gradient-to-r from-[#6ad0ff] to-[#9b8cff] hover:opacity-90 text-white font-medium px-6 py-3 rounded-xl shadow-lg"
+            >
+              點燃蠟燭 / Light the Candle
+            </Button>
+          </motion.div>
+          <p className="text-[#a7a7bb] text-sm mt-3">已點亮過將不重複儀式。</p>
+        </motion.section>
 
         {/* Closing Poem */}
-        <section id="closing" className="py-16 border-t border-dashed border-[#22223a] text-center">
+        <motion.section
+          id="closing"
+          className="py-16 border-t border-dashed border-[#22223a] text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
           <p className="text-[#f7d37b] font-semibold tracking-wide text-lg">自在見真光生成明</p>
           <p className="text-[#a7a7bb] mt-2">首尾相應:首字藏頭＝理煉慈悲思喚靈魂;尾字藏尾＝自在見真光生成明。</p>
-        </section>
+        </motion.section>
       </main>
 
       {/* Footer */}
       <footer className="py-10 text-[#9aa0b6] text-center border-t border-[#1e1e2d] mt-16">
         <div className="container mx-auto">
-          <p>© Rainbow Sanctuary × MAISON DE CHAO｜Based on MomoChao Thinking(可抄・可創・可變現,請保留註記)</p>
+          <p>© Rainbow Sanctuary × MAISON DE CHAO｜Based on MomoChao Thinking</p>
           <small className="text-[#99a0b5] block mt-2">封面格言:理性煉慈悲,思維喚靈魂。</small>
         </div>
       </footer>
 
       {/* Soft Overlay */}
       {showOverlay && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed inset-0 bg-white flex items-center justify-center z-[9999] transition-opacity duration-[4000ms] px-8"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-white flex items-center justify-center z-[9999] px-8"
         >
           <h1 className="text-[#333] font-extrabold text-3xl text-center leading-relaxed">
             謝謝你,願意點亮自己的光。<br />
             <span className="font-semibold text-xl block mt-2">Thank you for choosing to light your light.</span>
           </h1>
-        </div>
+        </motion.div>
       )}
 
       {/* Author Words */}
       {showAuthorWords && (
-        <div className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center z-[9999] text-[#444] text-lg leading-[1.95] px-8 transition-opacity duration-[4000ms]">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 bg-white flex flex-col items-center justify-center text-center z-[9999] text-[#444] text-lg leading-[1.95] px-8"
+        >
           <p className="max-w-[680px] mx-auto mb-5">
             人們以為最殘酷的,是謊言。<br />但真正會留下傷痕的,是那些被包裝成「善意」的謊言。
           </p>
@@ -324,7 +471,7 @@ export default function SystemConfig() {
           <p className="max-w-[680px] mx-auto mb-5">
             那樣的誠實,也許會讓人痛,<br />但它會讓人活。
           </p>
-        </div>
+        </motion.div>
       )}
     </div>
   );
