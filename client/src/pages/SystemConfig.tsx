@@ -7,6 +7,12 @@ import {
   FourTraitsRadarChart,
   ThinkingFlowDiagram,
 } from "@/components/VisualizationDiagrams";
+import {
+  BrandStorySection,
+  WhoWeServeSection,
+  OurDifferenceSection,
+  BrandManifestoSection,
+} from "@/components/BrandStory";
 
 export default function SystemConfig() {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
@@ -104,6 +110,9 @@ export default function SystemConfig() {
         </div>
       </motion.section>
 
+      {/* Brand Manifesto */}
+      <BrandManifestoSection isVisible={visibleSections.has("manifesto")} />
+
       {/* AI Recommendation */}
       <section
         id="ai-recommendation"
@@ -136,6 +145,15 @@ export default function SystemConfig() {
           </motion.div>
         </div>
       </section>
+
+      {/* Brand Story */}
+      <BrandStorySection isVisible={visibleSections.has("brand-story")} />
+
+      {/* Who We Serve */}
+      <WhoWeServeSection isVisible={visibleSections.has("who-we-serve")} />
+
+      {/* Our Difference */}
+      <OurDifferenceSection isVisible={visibleSections.has("our-difference")} />
 
       {/* Brand Origin */}
       <section
