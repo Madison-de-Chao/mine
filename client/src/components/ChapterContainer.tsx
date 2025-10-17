@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 interface ChapterContainerProps {
   chapterNumber: string;
   chapterTitle: string;
+  chapterSpell?: string;
   chapterColor: string;
   children: ReactNode;
   isVisible: boolean;
@@ -12,6 +13,7 @@ interface ChapterContainerProps {
 export function ChapterContainer({
   chapterNumber,
   chapterTitle,
+  chapterSpell,
   chapterColor,
   children,
   isVisible,
@@ -62,6 +64,14 @@ export function ChapterContainer({
           >
             {chapterTitle}
           </h2>
+          {chapterSpell && (
+            <p
+              className="text-xl md:text-2xl mt-4 font-light italic"
+              style={{ color: `${chapterColor}cc` }}
+            >
+              【{chapterSpell.charAt(0)}】{chapterSpell.substring(1)}
+            </p>
+          )}
         </motion.div>
 
         {/* Decorative Line */}
