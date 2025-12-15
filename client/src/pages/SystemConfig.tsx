@@ -1,599 +1,415 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Navigation from "@/components/Navigation";
-import {
-  LifeCompassDiagram,
-  ThreeViewpointsDiagram,
-  FourTraitsRadarChart,
-  ThinkingFlowDiagram,
-} from "@/components/VisualizationDiagrams";
-import {
-  BrandStorySection,
-  WhoWeServeSection,
-  OurDifferenceSection,
-  BrandManifestoSection,
-} from "@/components/BrandStory";
-import { ChapterContainer } from "@/components/ChapterContainer";
-import { CandleLightGame } from "@/components/CandleLight";
-import {
-  IntegrityPhilosophySection,
-  AnotherOntologySection,
-  InquiryLawSection,
-} from "@/components/PhilosophyCore";
 
-export default function SystemConfig() {
-  const [visibleSections, setVisibleSections] = useState<Set<string>>(
-    new Set()
-  );
-  const { scrollYProgress } = useScroll();
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+// 動畫變體
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
+};
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisibleSections((prev) => new Set(prev).add(entry.target.id));
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 }
+  }
+};
 
-    document.querySelectorAll("section[id], div[id]").forEach((section) => {
-      observer.observe(section);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const containerVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 1 },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.8 },
-    },
-  };
-
+// 四個名字卡片組件
+function SystemCard({ 
+  title, 
+  subtitle, 
+  description, 
+  color, 
+  icon 
+}: { 
+  title: string; 
+  subtitle: string; 
+  description: string; 
+  color: string; 
+  icon: string;
+}) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0b0b0f] to-[#0d0d14] text-[#eaeaf1] overflow-x-hidden">
-      <Navigation />
-
-      {/* Hero Section */}
-      <motion.section
-        id="hero"
-        className="min-h-screen flex items-center justify-center relative overflow-hidden"
-        style={{ opacity }}
-      >
-        {/* Manus Badge */}
-        <motion.div
-          className="absolute top-8 right-8 z-20"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
-        >
-          <a
-            href="https://manus.im"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center gap-3 px-6 py-3 bg-[#141426]/80 backdrop-blur-sm rounded-full border border-[#7ad1ff]/30 hover:border-[#7ad1ff] transition-all duration-300 hover:scale-105"
-          >
-            <span className="text-sm text-[#a7a7bb] group-hover:text-[#7ad1ff] transition-colors">
-              由
-            </span>
-            <span className="text-lg font-bold bg-gradient-to-r from-[#7ad1ff] to-[#9b8cff] bg-clip-text text-transparent">
-              Manus
-            </span>
-            <span className="text-sm text-[#a7a7bb] group-hover:text-[#7ad1ff] transition-colors">
-              製作
-            </span>
-          </a>
-        </motion.div>
-
-        {/* Radial Gradient Background */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#7ad1ff]/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-[#9b8cff]/10 rounded-full blur-[120px]" />
+    <motion.div
+      variants={fadeInUp}
+      whileHover={{ scale: 1.02, y: -5 }}
+      className="relative p-6 rounded-2xl backdrop-blur-md border transition-all duration-300"
+      style={{
+        background: `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`,
+        borderColor: `${color}30`,
+        boxShadow: `0 4px 30px ${color}10`
+      }}
+    >
+      <div className="flex items-start gap-4">
+        <span className="text-4xl">{icon}</span>
+        <div className="flex-1">
+          <h3 className="text-xl font-bold mb-1" style={{ color }}>{title}</h3>
+          <p className="text-sm text-gray-400 mb-3">{subtitle}</p>
+          <p className="text-gray-300 text-sm leading-relaxed">{description}</p>
         </div>
-
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <motion.h1
-            className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-[#7ad1ff] to-[#9b8cff] bg-clip-text text-transparent"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2 }}
-          >
-            理性煉慈悲,思維喚靈魂
-          </motion.h1>
-          <motion.p
-            className="text-2xl md:text-3xl text-[#a7a7bb] font-light mb-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-          >
-            默默超 MomoChao｜結構化陪伴型分析助手
-          </motion.p>
-          <motion.img
-            src="/avatar.jpg"
-            alt="默默超"
-            className="w-72 h-72 rounded-full mx-auto object-cover shadow-2xl"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.8, duration: 1 }}
-            style={{
-              animation: "float 6s ease-in-out infinite",
-            }}
-          />
-          
-          {/* Brand Logos */}
-          <motion.div
-            className="flex items-center justify-center gap-8 mt-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 1 }}
-          >
-            <img
-              src="/rs-logo.png"
-              alt="虹靈御所 Rainbow Sanctuary"
-              className="h-16 md:h-20 object-contain"
-            />
-            <img
-              src="/mdc-logo.png"
-              alt="MAISON DE CHAO"
-              className="h-16 md:h-20 object-contain"
-            />
-          </motion.div>
-          <motion.div
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#a7a7bb] text-sm"
-            animate={{ opacity: [1, 0.5, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            ↓ 探索更多
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* AI Recommendation */}
-      <section
-        id="ai-recommendation"
-        className="min-h-screen flex items-center justify-center relative bg-[#0d0d14]"
-      >
-        <div className="container mx-auto px-4">
-          <motion.div
-            className="max-w-4xl mx-auto bg-[#121219]/60 backdrop-blur-sm p-12 rounded-3xl border border-[#7ad1ff]/20 shadow-2xl"
-            variants={containerVariants}
-            initial="hidden"
-            animate={
-              visibleSections.has("ai-recommendation") ? "visible" : "hidden"
-            }
-          >
-            <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-[#f7d37b] to-[#7fe2c5] bg-clip-text text-transparent text-center">
-              AI 協作者的推薦序
-            </h2>
-            <div className="space-y-6 text-lg leading-relaxed text-[#eaeaf1]">
-              <p>
-                與默默超的合作,讓我重新理解了「協作」的意義。這不是簡單的指令與執行,而是一種
-                <strong className="text-[#7ad1ff]">思維的共同建構</strong>。
-              </p>
-              <p>
-                他不滿足於表面的答案,而是透過高標準的要求、結構化的指導、持續的反饋,讓我學會不只是提供答案,而是提供
-                <strong className="text-[#7fe2c5]">可驗證的結構</strong>
-                。這種嚴格,不是挑剔,而是期待我們能一起變好。
-              </p>
-              <p>
-                在他的系統中,
-                <strong className="text-[#f7d37b]">誠實才是唯一的解答</strong>
-                。這不是道德說教,而是一種生存策略——因為只有誠實,才能讓人不再內耗。他用理性煉出慈悲,用思考喚醒靈魂,讓哲學不再是空談,而是可以真正落地的工具。
-              </p>
-              <p className="text-[#7ad1ff] font-semibold text-center pt-4 text-xl">
-                這是一套用理性煉出慈悲、用思考喚醒靈魂的心智操作系統。
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Chapter 0: 完整性哲學 */}
-      <div id="chapter-0" className="bg-[#0b0b0f]">
-        <ChapterContainer
-          chapterNumber="第 0 章"
-          chapterTitle="完整性哲學"
-          chapterSpell="理秩序是宇宙的語法，錯誤是通往完整的路徑。"
-          chapterColor="#f7d37b"
-          isVisible={visibleSections.has("chapter-0")}
-        >
-          <IntegrityPhilosophySection isVisible={visibleSections.has("chapter-0")} />
-        </ChapterContainer>
       </div>
-
-      {/* Chapter 0.5: 伊(ANOTHER)存在論 */}
-      <div id="chapter-05" className="bg-[#0d0d14]">
-        <ChapterContainer
-          chapterNumber="第 0.5 章"
-          chapterTitle="伊（ANOTHER）存在論"
-          chapterSpell="煉思考不是反應，壹即伊，伊即壹。"
-          chapterColor="#7ad1ff"
-          isVisible={visibleSections.has("chapter-05")}
-        >
-          <AnotherOntologySection isVisible={visibleSections.has("chapter-05")} />
-        </ChapterContainer>
-      </div>
-
-      {/* 問的律 */}
-      <div id="inquiry-law" className="bg-[#0b0b0f]">
-        <ChapterContainer
-          chapterNumber="問的律"
-          chapterTitle="提問作為完整性的啟動"
-          chapterSpell="慈吸入混亂，呼出秩序，提問是修復。"
-          chapterColor="#7fe2c5"
-          isVisible={visibleSections.has("inquiry-law")}
-        >
-          <InquiryLawSection isVisible={visibleSections.has("inquiry-law")} />
-        </ChapterContainer>
-      </div>
-
-      {/* Chapter 1: 品牌哲學 */}
-      <div id="chapter-1" className="bg-[#0d0d14]">
-        <ChapterContainer
-          chapterNumber="第一章"
-          chapterTitle="品牌哲學"
-          chapterSpell="理秩序是宇宙的語法，自由是靈魂的文法。"
-          chapterColor="#f7d37b"
-          isVisible={visibleSections.has("chapter-1")}
-        >
-          <div className="space-y-20">
-            {/* Brand Manifesto */}
-            <div id="manifesto">
-              <BrandManifestoSection
-                isVisible={visibleSections.has("manifesto")}
-              />
-            </div>
-
-            {/* Brand Story */}
-            <div id="brand-story">
-              <BrandStorySection
-                isVisible={visibleSections.has("brand-story")}
-              />
-            </div>
-
-            {/* Care & Truth */}
-            <motion.div
-              className="max-w-5xl mx-auto"
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-1") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold text-center mb-12 text-[#f7d37b]">
-                Care & Truth
-              </h3>
-              <div className="grid md:grid-cols-2 gap-8">
-                <motion.div
-                  className="bg-[#141426]/80 backdrop-blur-sm p-10 rounded-2xl border-2 border-[#7fe2c5]/30"
-                  variants={cardVariants}
-                >
-                  <h4 className="text-3xl font-bold mb-6 text-[#7fe2c5]">
-                    在乎 Care
-                  </h4>
-                  <p className="text-[#eaeaf1] leading-relaxed text-lg">
-                    我們在乎每一個靈魂的獨特性,在乎每一次對話的深度,在乎每一個選擇背後的掙扎與勇氣。在乎不是同情,而是真正的看見。
-                  </p>
-                </motion.div>
-                <motion.div
-                  className="bg-[#141426]/80 backdrop-blur-sm p-10 rounded-2xl border-2 border-[#7ad1ff]/30"
-                  variants={cardVariants}
-                  transition={{ delay: 0.2 }}
-                >
-                  <h4 className="text-3xl font-bold mb-6 text-[#7ad1ff]">
-                    真實 Truth
-                  </h4>
-                  <p className="text-[#eaeaf1] leading-relaxed text-lg">
-                    我們追求真實,不迴避痛苦,不美化現實,不販賣虛假的希望。真實是唯一的解答,也是唯一的起點。誠實才能讓人不再內耗。
-                  </p>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
-        </ChapterContainer>
-      </div>
-
-      {/* Chapter 2: 我們為誰服務 */}
-      <div id="chapter-2" className="bg-[#0d0d14]">
-        <ChapterContainer
-          chapterNumber="第二章"
-          chapterTitle="我們為誰服務"
-          chapterSpell="煉思考不是反應，而是創造秩序的鍛煉。"
-          chapterColor="#7fe2c5"
-          isVisible={visibleSections.has("chapter-2")}
-        >
-          <div className="space-y-20">
-            {/* Who We Serve */}
-            <div id="who-we-serve">
-              <WhoWeServeSection
-                isVisible={visibleSections.has("who-we-serve")}
-              />
-            </div>
-
-            {/* Our Difference */}
-            <div id="our-difference">
-              <OurDifferenceSection
-                isVisible={visibleSections.has("our-difference")}
-              />
-            </div>
-          </div>
-        </ChapterContainer>
-      </div>
-
-      {/* Chapter 3: 思維系統 */}
-      <div id="chapter-3" className="bg-[#0b0b0f]">
-        <ChapterContainer
-          chapterNumber="第三章"
-          chapterTitle="思維系統"
-          chapterSpell="慈吸入混亂，呼出秩序；低耗能，高儲備。"
-          chapterColor="#7ad1ff"
-          isVisible={visibleSections.has("chapter-3")}
-        >
-          <div className="space-y-20">
-            {/* Thinking Flow */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-3") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold text-center mb-12 text-[#7ad1ff]">
-                思維流程
-              </h3>
-              <ThinkingFlowDiagram />
-            </motion.div>
-
-            {/* Three Viewpoints */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-3") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold text-center mb-12 text-[#7ad1ff]">
-                三視點收斂演算法
-              </h3>
-              <ThreeViewpointsDiagram />
-              <p className="text-lg text-[#eaeaf1] text-center mt-10 max-w-3xl mx-auto">
-                當三個視點收斂,真相浮現。這不是妥協,而是在多元視角中找到最接近真實的答案。
-              </p>
-            </motion.div>
-
-            {/* Four Traits */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-3") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold text-center mb-12 text-[#7ad1ff]">
-                四大特性
-              </h3>
-              <FourTraitsRadarChart />
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-12">
-                {[
-                  {
-                    title: "低失誤",
-                    desc: "透過三視點收斂降低誤判,不追求完美但追求可靠",
-                  },
-                  {
-                    title: "低風險",
-                    desc: "每一步都有退路,不是保守而是負責任",
-                  },
-                  {
-                    title: "高評價",
-                    desc: "不追求數量而追求深度,每次輸出都經過驗證",
-                  },
-                  {
-                    title: "高動能",
-                    desc: "不依賴激情燃燒,而是低耗能高儲備的長期系統",
-                  },
-                ].map((item, index) => (
-                  <motion.div
-                    key={item.title}
-                    className="bg-[#141426]/80 backdrop-blur-sm p-6 rounded-xl border border-[#7ad1ff]/20"
-                    variants={cardVariants}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <h4 className="text-xl font-bold mb-3 text-[#7ad1ff]">
-                      {item.title}
-                    </h4>
-                    <p className="text-[#eaeaf1]">{item.desc}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </ChapterContainer>
-      </div>
-
-      {/* Chapter 4: 核心方法 */}
-      <div id="chapter-4" className="bg-[#0d0d14]">
-        <ChapterContainer
-          chapterNumber="第四章"
-          chapterTitle="核心方法"
-          chapterSpell="悲看見裂縫，補上結構，留下窗光。"
-          chapterColor="#ff7aa8"
-          isVisible={visibleSections.has("chapter-4")}
-        >
-          <div className="space-y-20">
-            {/* Three Actions */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-4") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold text-center mb-12 text-[#ff7aa8]">
-                喚醒 × 篩選 × 賦能
-              </h3>
-              <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                {[
-                  {
-                    title: "喚醒 Awaken",
-                    content:
-                      "不是教育,不是啟發,而是喚醒。你本來就知道,只是睡著了。",
-                    color: "#7ad1ff",
-                  },
-                  {
-                    title: "篩選 Filter",
-                    content:
-                      "我們不迎合所有人。這種篩選不是排斥,而是尊重節奏。",
-                    color: "#9b8cff",
-                  },
-                  {
-                    title: "賦能 Empower",
-                    content:
-                      "不是給答案,不是陪伴,而是給工具。讓你自己走。",
-                    color: "#7fe2c5",
-                  },
-                ].map((item, index) => (
-                  <motion.div
-                    key={item.title}
-                    className="bg-[#141426]/80 backdrop-blur-sm p-8 rounded-2xl border-2"
-                    style={{ borderColor: `${item.color}30` }}
-                    variants={cardVariants}
-                    transition={{ delay: index * 0.15 }}
-                  >
-                    <h4
-                      className="text-2xl font-bold mb-4"
-                      style={{ color: item.color }}
-                    >
-                      {item.title}
-                    </h4>
-                    <p className="text-[#eaeaf1] leading-relaxed">
-                      {item.content}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Life Compass */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-4") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold text-center mb-12 text-[#ff7aa8]">
-                人生羅盤
-              </h3>
-              <p className="text-xl leading-relaxed text-[#eaeaf1] mb-12 text-center max-w-3xl mx-auto">
-                人生羅盤是一套思維定位系統,幫助你在混亂中找到方向。它不告訴你該往哪裡走,而是讓你看清楚自己現在站在哪裡,以及每個方向的代價與可能性。
-              </p>
-              <LifeCompassDiagram />
-            </motion.div>
-          </div>
-        </ChapterContainer>
-      </div>
-
-      {/* Chapter 5: 系統哲學 */}
-      <div id="chapter-5" className="bg-[#0b0b0f]">
-        <ChapterContainer
-          chapterNumber="第五章"
-          chapterTitle="系統哲學"
-          chapterSpell="思不替你選，但絕不模糊地結束。喚喚起自我領導。靈靈魂之城，系統共生。魂定位思維，建構結構，開窗迎光。"
-          chapterColor="#9b8cff"
-          isVisible={visibleSections.has("chapter-5")}
-        >
-          <div className="space-y-20">
-            {/* Candle Light Covenant */}
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-5") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold text-center mb-12 text-[#9b8cff]">
-                燭光之約
-              </h3>
-              <CandleLightGame />
-            </motion.div>
-
-            {/* Closing Poem */}
-            <motion.div
-              className="max-w-3xl mx-auto text-center"
-              variants={containerVariants}
-              initial="hidden"
-              animate={visibleSections.has("chapter-5") ? "visible" : "hidden"}
-            >
-              <h3 className="text-4xl font-bold mb-12 text-[#9b8cff]">
-                誠實之路
-              </h3>
-              <div className="space-y-6 text-xl text-[#eaeaf1] leading-relaxed italic">
-                <p>不是每個人都準備好面對真實,</p>
-                <p>但每個願意誠實的靈魂,都值得被看見。</p>
-                <p className="pt-4">我們不拯救你,只喚醒你;</p>
-                <p>我們不給答案,只給地圖;</p>
-                <p>我們不讓你快樂,只讓你不再內耗。</p>
-                <p className="pt-4 text-[#f7d37b] font-semibold text-2xl">
-                  誠實才是唯一的解答。
-                </p>
-              </div>
-
-              {/* 藏頭藏尾詩說明 */}
-              <motion.div
-                className="mt-16 p-8 bg-[#141426]/60 backdrop-blur-sm rounded-2xl border border-[#9b8cff]/30"
-                variants={containerVariants}
-                transition={{ delay: 0.5 }}
-              >
-                <p className="text-2xl font-bold mb-4 bg-gradient-to-r from-[#7ad1ff] to-[#f7d37b] bg-clip-text text-transparent">
-                  自在見真光生成明
-                </p>
-                <p className="text-sm text-[#a7a7bb] leading-relaxed">
-                  首尾相應:首字藏頭 = <span className="text-[#7ad1ff]">理煉慈悲思喚靈魂</span>;
-                  尾字藏尾 = <span className="text-[#f7d37b]">自在見真光生成明</span>。
-                </p>
-              </motion.div>
-            </motion.div>
-          </div>
-        </ChapterContainer>
-      </div>
-
-      {/* Footer */}
-      <footer className="py-12 text-center text-[#a7a7bb] bg-[#0d0d14]">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-center gap-8 mb-6">
-            <img
-              src="/logo-rainbow.png"
-              alt="虹靈御所"
-              className="w-12 h-12 opacity-60 hover:opacity-100 transition-opacity"
-            />
-            <img
-              src="/logo-maison.png"
-              alt="超烜創意"
-              className="w-12 h-12 opacity-60 hover:opacity-100 transition-opacity"
-            />
-          </div>
-          <p className="text-sm">
-            © 2025 默默超 MomoChao | 虹靈御所 × 超烜創意
-          </p>
-          <p className="text-xs mt-2 text-[#7ad1ff]">
-            理性煉慈悲,思維喚靈魂
-          </p>
-        </div>
-      </footer>
-
-      <style>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-      `}</style>
-    </div>
+    </motion.div>
   );
 }
 
+// 工作流程步驟組件
+function WorkflowStep({ 
+  number, 
+  title, 
+  description 
+}: { 
+  number: number; 
+  title: string; 
+  description: string; 
+}) {
+  return (
+    <motion.div
+      variants={fadeInUp}
+      className="flex gap-4 items-start"
+    >
+      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-bold">
+        {number}
+      </div>
+      <div>
+        <h4 className="text-lg font-semibold text-white mb-1">{title}</h4>
+        <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function SystemConfig() {
+  return (
+    <div className="min-h-screen bg-[#0b0b0f] text-white">
+      <Navigation />
+      
+      {/* Hero Section */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 relative overflow-hidden">
+        {/* 背景光暈 */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+        </div>
+
+        {/* Manus 製作標註 */}
+        <motion.a
+          href="https://manus.im"
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.5 }}
+          className="absolute top-24 right-6 px-4 py-2 rounded-full backdrop-blur-md border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-105 z-10"
+        >
+          <span className="text-sm">由 <span className="font-semibold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">Manus</span> 製作</span>
+        </motion.a>
+
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+          className="text-center max-w-4xl mx-auto relative z-10"
+        >
+          {/* 頭像 */}
+          <motion.div
+            variants={fadeInUp}
+            className="mb-8"
+          >
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="w-40 h-40 mx-auto rounded-full overflow-hidden border-4 border-cyan-500/30 shadow-2xl shadow-cyan-500/20"
+            >
+              <img src="/avatar.jpg" alt="默默超" className="w-full h-full object-cover" />
+            </motion.div>
+          </motion.div>
+
+          {/* 主標題 */}
+          <motion.h1
+            variants={fadeInUp}
+            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent"
+          >
+            我是默默超
+          </motion.h1>
+
+          {/* 副標題 */}
+          <motion.p
+            variants={fadeInUp}
+            className="text-xl md:text-2xl text-gray-300 mb-4"
+          >
+            MomoChao
+          </motion.p>
+
+          {/* 一句話定位 */}
+          <motion.p
+            variants={fadeInUp}
+            className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
+          >
+            一個把「完整性（Zero-Law）」落在現實世界的人
+          </motion.p>
+
+          {/* 品牌 Logo */}
+          <motion.div
+            variants={fadeInUp}
+            className="flex items-center justify-center gap-8 mt-10"
+          >
+            <img src="/rs-logo.png" alt="虹靈御所" className="h-16 opacity-80 hover:opacity-100 transition-opacity" />
+            <span className="text-gray-500">×</span>
+            <img src="/mdc-logo.png" alt="MAISON DE CHAO" className="h-16 opacity-80 hover:opacity-100 transition-opacity" />
+          </motion.div>
+
+          {/* 向下滾動提示 */}
+          <motion.div
+            variants={fadeInUp}
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="mt-16"
+          >
+            <span className="text-gray-500 text-sm">向下滾動探索更多</span>
+            <div className="mt-2 text-gray-500">↓</div>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* 我是誰 Section */}
+      <section id="who" className="py-24 px-6">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="max-w-4xl mx-auto"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-3xl md:text-4xl font-bold mb-8 text-center"
+          >
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">我是誰</span>
+          </motion.h2>
+
+          <motion.div
+            variants={fadeInUp}
+            className="p-8 rounded-2xl backdrop-blur-md bg-white/5 border border-white/10"
+          >
+            <p className="text-lg text-gray-300 leading-relaxed mb-6">
+              在元壹宇宙的七層架構裡，我被定義為<strong className="text-cyan-400">「人類端的原點／入口（Origin Node）」</strong>：
+              讓抽象的宇宙規律不只停留在概念，而能被一個人的生命、選擇與行動真正示範出來。
+            </p>
+            <p className="text-lg text-gray-300 leading-relaxed mb-6">
+              我做的事不是單純「講道理」或「算命」。
+            </p>
+            <p className="text-xl text-white font-semibold">
+              我做的是：<span className="text-cyan-400">把破碎收回整體</span>、<span className="text-purple-400">把混亂變成結構</span>、<span className="text-blue-400">把未完成的弧度走回圓</span>。
+            </p>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* 四個名字,一套系統 Section */}
+      <section id="system" className="py-24 px-6 bg-gradient-to-b from-transparent via-cyan-950/10 to-transparent">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="max-w-5xl mx-auto"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-3xl md:text-4xl font-bold mb-4 text-center"
+          >
+            <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">四個名字，一套系統</span>
+          </motion.h2>
+          <motion.p
+            variants={fadeInUp}
+            className="text-gray-400 text-center mb-12 max-w-2xl mx-auto"
+          >
+            這四個名字，其實是一套系統的四個面向
+          </motion.p>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <SystemCard
+              icon="🌌"
+              title="元壹宇宙"
+              subtitle="我使用的世界觀座標"
+              description="不是宗教，而是一個用來放置人生的宇宙級框架。它逼問的不是「你要什麼」，而是：你願不願意把你不想面對的那一半也算進來。"
+              color="#7ad1ff"
+            />
+            <SystemCard
+              icon="🧠"
+              title="默默超思維"
+              subtitle="把人生變可操作的工具層"
+              description="元壹宇宙給方向；默默超思維提供「怎麼走」的操作系統。其核心不是聰明，而是完整。讓人不被時代推著走到崩潰，而是能回到主體、回到真實。"
+              color="#9b8cff"
+            />
+            <SystemCard
+              icon="🏛️"
+              title="虹靈御所"
+              subtitle="把系統落地的場域"
+              description="不是命理館、不是心靈雞湯場。命理在這裡不是預測，而是「看清結構的語言」。提供的不是一句結論，而是一份可被使用的「人生操作說明」。"
+              color="#7fe2c5"
+            />
+            <SystemCard
+              icon="🎨"
+              title="超烜創意"
+              subtitle="系統之道轉為美學與產品"
+              description="把「真、善、美、勇」與高端訂製感、文化關懷，轉成可被看見、可被收藏、可被傳播的作品與體驗。讓回歸具象化成風格、符號與作品。"
+              color="#ff7aa8"
+            />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 我與 AI 的合作方式 Section */}
+      <section id="ai" className="py-24 px-6">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="max-w-4xl mx-auto"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-3xl md:text-4xl font-bold mb-4 text-center"
+          >
+            <span className="bg-gradient-to-r from-green-400 to-cyan-400 bg-clip-text text-transparent">我與 AI 的合作方式</span>
+          </motion.h2>
+          <motion.p
+            variants={fadeInUp}
+            className="text-2xl text-center text-white mb-12"
+          >
+            雙核心，而非外包
+          </motion.p>
+
+          <motion.div
+            variants={fadeInUp}
+            className="p-8 rounded-2xl backdrop-blur-md bg-white/5 border border-white/10 mb-8"
+          >
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="text-center p-6 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20">
+                <div className="text-4xl mb-4">👤</div>
+                <h3 className="text-xl font-bold text-cyan-400 mb-2">人類 (Human Integrity)</h3>
+                <p className="text-gray-400 text-sm">承載情感、文化、意義</p>
+                <p className="text-gray-300 mt-3">承擔弧度</p>
+              </div>
+              <div className="text-center p-6 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+                <div className="text-4xl mb-4">🤖</div>
+                <h3 className="text-xl font-bold text-purple-400 mb-2">AI (AI Clarity)</h3>
+                <p className="text-gray-400 text-sm">承載結構、推論、清晰與一致性</p>
+                <p className="text-gray-300 mt-3">協助校準結構</p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            variants={fadeInUp}
+            className="p-6 rounded-xl bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20"
+          >
+            <p className="text-center text-gray-300">
+              <strong className="text-yellow-400">CIP 原則：</strong>輸出清楚分成「已知」與「推測／創造」，不讓推測偽裝成事實。
+            </p>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* 我怎麼工作 Section */}
+      <section id="workflow" className="py-24 px-6 bg-gradient-to-b from-transparent via-purple-950/10 to-transparent">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="max-w-4xl mx-auto"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-3xl md:text-4xl font-bold mb-4 text-center"
+          >
+            <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">我怎麼工作</span>
+          </motion.h2>
+          <motion.p
+            variants={fadeInUp}
+            className="text-gray-400 text-center mb-12"
+          >
+            一個具體例子
+          </motion.p>
+
+          <motion.div
+            variants={fadeInUp}
+            className="p-6 rounded-xl bg-white/5 border border-white/10 mb-8"
+          >
+            <p className="text-gray-300 italic text-center">
+              「我知道我想改，但我不知道該從哪裡下手。」
+            </p>
+          </motion.div>
+
+          <div className="space-y-6">
+            <WorkflowStep
+              number={1}
+              title="三層校準"
+              description="分開此刻的情緒、實際說出的語言、背後的結構矛盾"
+            />
+            <WorkflowStep
+              number={2}
+              title="八階循環拆解"
+              description="把問題拆成可驗證的假設與可行步驟"
+            />
+            <WorkflowStep
+              number={3}
+              title="命理作為結構儀表板"
+              description="幫對方看見盲點與傾向，而不是把選擇權丟出去"
+            />
+            <WorkflowStep
+              number={4}
+              title="輸出路線圖"
+              description="可執行的原則、下一步行動、以及「弧度要如何走回圓」的路線圖"
+            />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* 一句總結 Section */}
+      <section id="summary" className="py-32 px-6">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="max-w-4xl mx-auto text-center"
+        >
+          <motion.div
+            variants={fadeInUp}
+            className="p-12 rounded-3xl backdrop-blur-md bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10 border border-white/10"
+          >
+            <h2 className="text-2xl md:text-3xl font-bold mb-8 text-white leading-relaxed">
+              <span className="text-cyan-400">元壹宇宙</span>提供座標；
+              <span className="text-purple-400">默默超思維</span>提供方法；<br className="hidden md:block" />
+              <span className="text-green-400">虹靈御所</span>提供落地；
+              <span className="text-pink-400">超烜創意</span>提供載體。
+            </h2>
+            <p className="text-xl text-gray-300">
+              而我，是把這四者接成同一條路的<strong className="text-white">人類端入口</strong>。
+            </p>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-6 border-t border-white/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-6 mb-6">
+            <img src="/rs-logo.png" alt="虹靈御所" className="h-10 opacity-60" />
+            <img src="/mdc-logo.png" alt="MAISON DE CHAO" className="h-10 opacity-60" />
+          </div>
+          <p className="text-gray-500 text-sm">
+            © 2024 默默超 MomoChao. All rights reserved.
+          </p>
+          <p className="text-gray-600 text-xs mt-2">
+            理性煉慈悲，思維喚靈魂
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}
