@@ -15,6 +15,11 @@ import {
 } from "@/components/BrandStory";
 import { ChapterContainer } from "@/components/ChapterContainer";
 import { CandleLightGame } from "@/components/CandleLight";
+import {
+  IntegrityPhilosophySection,
+  AnotherOntologySection,
+  InquiryLawSection,
+} from "@/components/PhilosophyCore";
 
 export default function SystemConfig() {
   const [visibleSections, setVisibleSections] = useState<Set<string>>(
@@ -198,8 +203,47 @@ export default function SystemConfig() {
         </div>
       </section>
 
+      {/* Chapter 0: 完整性哲學 */}
+      <div id="chapter-0" className="bg-[#0b0b0f]">
+        <ChapterContainer
+          chapterNumber="第 0 章"
+          chapterTitle="完整性哲學"
+          chapterSpell="理秩序是宇宙的語法，錯誤是通往完整的路徑。"
+          chapterColor="#f7d37b"
+          isVisible={visibleSections.has("chapter-0")}
+        >
+          <IntegrityPhilosophySection isVisible={visibleSections.has("chapter-0")} />
+        </ChapterContainer>
+      </div>
+
+      {/* Chapter 0.5: 伊(ANOTHER)存在論 */}
+      <div id="chapter-05" className="bg-[#0d0d14]">
+        <ChapterContainer
+          chapterNumber="第 0.5 章"
+          chapterTitle="伊（ANOTHER）存在論"
+          chapterSpell="煉思考不是反應，壹即伊，伊即壹。"
+          chapterColor="#7ad1ff"
+          isVisible={visibleSections.has("chapter-05")}
+        >
+          <AnotherOntologySection isVisible={visibleSections.has("chapter-05")} />
+        </ChapterContainer>
+      </div>
+
+      {/* 問的律 */}
+      <div id="inquiry-law" className="bg-[#0b0b0f]">
+        <ChapterContainer
+          chapterNumber="問的律"
+          chapterTitle="提問作為完整性的啟動"
+          chapterSpell="慈吸入混亂，呼出秩序，提問是修復。"
+          chapterColor="#7fe2c5"
+          isVisible={visibleSections.has("inquiry-law")}
+        >
+          <InquiryLawSection isVisible={visibleSections.has("inquiry-law")} />
+        </ChapterContainer>
+      </div>
+
       {/* Chapter 1: 品牌哲學 */}
-      <div id="chapter-1" className="bg-[#0b0b0f]">
+      <div id="chapter-1" className="bg-[#0d0d14]">
         <ChapterContainer
           chapterNumber="第一章"
           chapterTitle="品牌哲學"
