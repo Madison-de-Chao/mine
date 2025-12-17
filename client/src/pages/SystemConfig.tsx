@@ -232,6 +232,7 @@ export default function SystemConfig() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
+            鏡子非劇本，真實即命運。<br/>
             整個完整性宇宙在人類端的<span className="text-cyan-400 font-semibold">原點</span>
           </motion.p>
 
@@ -246,7 +247,6 @@ export default function SystemConfig() {
               whileHover={{ scale: 1.05 }}
             >
               <img src="/logo-rainbow.png" alt="虹靈御所" className="h-24 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]" />
-              {/* <span className="text-xs text-slate-400 tracking-widest uppercase">Rainbow Sanctuary</span> */}
             </motion.div>
             <span className="text-slate-700 text-2xl font-thin">×</span>
             <motion.div 
@@ -254,7 +254,6 @@ export default function SystemConfig() {
               whileHover={{ scale: 1.05 }}
             >
               <img src="/logo-maison.png" alt="MAISON DE CHAO" className="h-24 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,215,0,0.3)]" />
-              {/* <span className="text-xs text-slate-400 tracking-widest uppercase">Maison De Chao</span> */}
             </motion.div>
           </motion.div>
         </motion.div>
