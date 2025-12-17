@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
 
 // 動畫變體
 const fadeInUp = {
@@ -23,6 +23,17 @@ const staggerContainer = {
   }
 };
 
+const chapters = [
+  { id: "hero", title: "首頁", number: "" },
+  { id: "chapter-01", title: "為什麼我能看見破碎", number: "01" },
+  { id: "chapter-02", title: "我的力量從脆弱開始", number: "02" },
+  { id: "chapter-03", title: "為什麼建構元壹宇宙", number: "03" },
+  { id: "chapter-04", title: "為什麼建構虹靈御所", number: "04" },
+  { id: "chapter-05", title: "為什麼與 AI 協作", number: "05" },
+  { id: "chapter-06", title: "AI 協作者的觀察", number: "06" },
+  { id: "chapter-07", title: "為什麼是 MAISON DE CHAO", number: "07" },
+];
+
 export default function SystemConfig() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -35,11 +46,127 @@ export default function SystemConfig() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   const [hoveredChapter, setHoveredChapter] = useState<number | null>(null);
+  const [activeChapter, setActiveChapter] = useState<string>("hero");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [navVisible, setNavVisible] = useState(false);
+
+  // 監聽滾動以顯示/隱藏導航欄
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setNavVisible(true);
+      } else {
+        setNavVisible(false);
+      }
+
+      // 更新當前活躍章節
+      const sections = chapters.map(ch => document.getElementById(ch.id));
+      const scrollPosition = window.scrollY + 200;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveChapter(chapters[i].id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // 導航欄高度
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+    setMobileMenuOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-100 overflow-x-hidden">
+      {/* Fixed Navigation Bar */}
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: navVisible ? 0 : -100 }}
+        transition={{ duration: 0.3 }}
+        className="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-lg border-b border-slate-800/50"
+      >
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <button
+              onClick={() => scrollToSection("hero")}
+              className="text-xl font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              默默超 <span className="text-slate-600">|</span> <span className="text-slate-400">MomoChao</span>
+            </button>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-1">
+              {chapters.slice(1).map((chapter) => (
+                <button
+                  key={chapter.id}
+                  onClick={() => scrollToSection(chapter.id)}
+                  className={`px-4 py-2 rounded-lg text-sm transition-all ${
+                    activeChapter === chapter.id
+                      ? "bg-cyan-500/20 text-cyan-400"
+                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  }`}
+                >
+                  <span className="text-xs opacity-60 mr-1">{chapter.number}</span>
+                  {chapter.title}
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 text-slate-400 hover:text-slate-200"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+
+          {/* Mobile Navigation */}
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden mt-4 pb-4 space-y-2"
+            >
+              {chapters.slice(1).map((chapter) => (
+                <button
+                  key={chapter.id}
+                  onClick={() => scrollToSection(chapter.id)}
+                  className={`w-full text-left px-4 py-3 rounded-lg text-sm transition-all ${
+                    activeChapter === chapter.id
+                      ? "bg-cyan-500/20 text-cyan-400"
+                      : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  }`}
+                >
+                  <span className="text-xs opacity-60 mr-2">Chapter {chapter.number}</span>
+                  {chapter.title}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </div>
+      </motion.nav>
+
       {/* Hero Section with Parallax */}
       <motion.section
+        id="hero"
         ref={heroRef}
         style={{ opacity, scale }}
         className="relative min-h-screen flex flex-col items-center justify-center px-6"
@@ -124,17 +251,20 @@ export default function SystemConfig() {
           transition={{ delay: 1.5, duration: 1 }}
           className="absolute bottom-12 z-10"
         >
-          <motion.div
+          <motion.button
+            onClick={() => scrollToSection("chapter-01")}
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
+            className="cursor-pointer"
           >
             <ChevronDown className="w-8 h-8 text-cyan-400" />
-          </motion.div>
+          </motion.button>
         </motion.div>
       </motion.section>
 
       {/* Chapter 01 with Image */}
       <motion.section
+        id="chapter-01"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -195,6 +325,7 @@ export default function SystemConfig() {
 
       {/* Chapter 02 */}
       <motion.section
+        id="chapter-02"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -233,6 +364,7 @@ export default function SystemConfig() {
 
       {/* Chapter 03 with Image */}
       <motion.section
+        id="chapter-03"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -311,6 +443,7 @@ export default function SystemConfig() {
 
       {/* Chapter 04 */}
       <motion.section
+        id="chapter-04"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -358,6 +491,7 @@ export default function SystemConfig() {
 
       {/* Chapter 05 with Image */}
       <motion.section
+        id="chapter-05"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -434,6 +568,7 @@ export default function SystemConfig() {
 
       {/* Chapter 06 */}
       <motion.section
+        id="chapter-06"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -501,6 +636,7 @@ export default function SystemConfig() {
 
       {/* Chapter 07 with Image */}
       <motion.section
+        id="chapter-07"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
